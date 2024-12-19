@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="@color/black">
+
+    <ImageView
+        android:id="@+id/nham_icon_view"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/enter_button"
+        android:src="@drawable/nham_nham_icon"
+        android:layout_marginTop="100dp"
+        />
+
+    <ImageButton
+        android:id="@+id/enter_button"
+        android:layout_width="150dp"
+        android:layout_height="70dp"
+        app:layout_constraintTop_toBottomOf="@id/nham_icon_view"
+        app:layout_constraintBottom_toTopOf="@id/option_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:src="@drawable/iniciar_btn_foreground"
+        android:background="@drawable/inicar_btn_background"
+        android:layout_marginTop="60dp"
+        />
+    <ImageButton
+        android:id="@+id/option_button"
+        android:layout_width="150dp"
+        android:layout_height="70dp"
+        app:layout_constraintTop_toBottomOf="@id/enter_button"
+        app:layout_constraintBottom_toTopOf="@id/credits_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:src="@drawable/opicao_btn_foreground"
+        android:background="@drawable/inicar_btn_background"
+        android:layout_marginTop="15dp"
+        />
+    <ImageButton
+        android:id="@+id/credits_button"
+        android:layout_width="150dp"
+        android:layout_height="70dp"
+        app:layout_constraintTop_toBottomOf="@id/option_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:src="@drawable/creditos_btn_foreground"
+        android:background="@drawable/inicar_btn_background"
+        android:layout_marginTop="15dp"
+        />
+
+    <RelativeLayout
+        android:id="@+id/credits_view"
+        android:layout_width="200dp"
+        android:layout_height="250dp"
+        android:background="@drawable/credits_background"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        >
+
+
+        <TextView
+            android:id="@+id/credits_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Créditos"
+            android:textSize="20sp"
+            android:textColor="@android:color/white"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:fontFamily="@font/consola"
+            />
+
+        <TextView
+            android:id="@+id/credits_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="Desenvolvido por:\t
+             \n\n--> Cleiton Viana\t
+             \n\n--> Daniela Lana"
+            android:textColor="@android:color/white"
+            android:layout_below="@id/credits_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/consola"/>
+
+        <Button
+            android:id="@+id/close_credits_button"
+            android:layout_width="80dp"
+            android:layout_height="45dp"
+            android:text="Sair"
+            android:backgroundTint="#C24143"
+            android:textColor="@android:color/white"
+            android:layout_below="@id/credits_message"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/consola"/>
+    </RelativeLayout>
+
+    <ImageButton
+        android:id="@+id/music_button"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_unmuted"
+        android:background="@drawable/image_button_border"
+        android:scaleType="fitCenter"
+        android:padding="1dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="30dp"
+        />
+    <TextView
+        android:id="@+id/version_app"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Versão 1.0.0"
+        android:textStyle="bold"
+        android:textSize="10dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintTop_toBottomOf="@id/music_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
