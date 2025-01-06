@@ -13,21 +13,24 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
+// A GameActivity é a tela principal do jogo, onde o jogador pode jogar o jogo Nham Nham.
 class GameActivity : AppCompatActivity() {
 
-    private var currentPlayer = 1 // Jogador atual (1 ou 2)
-    private var selectedPiece: Drawable? = null // Peça selecionada
-    private var selectedPieceSize: Int = 0 // Tamanho da peça selecionada
-    private var selectedPieceButton: ImageButton? = null // Botão da peça selecionada
-    private var invisibleDrawable: Drawable? = null // Drawable invisível
-    private val board = Array(3) { Array(3) { Pair(0, 0) } } // Tabuleiro: (jogador, tamanho da peça)
+    // Variáveis de estado do jogo
+    private var currentPlayer = 1
+    private var selectedPiece: Drawable? = null
+    private var selectedPieceSize: Int = 0
+    private var selectedPieceButton: ImageButton? = null
+    private var invisibleDrawable: Drawable? = null
+    private val board = Array(3) { Array(3) { Pair(0, 0) } } // Inicializa o tabuleiro vazio
     private var isMuted = false
 
-    // Map para armazenar os drawables originais das peças
+    // Mapeia os botões de peças aos drawables originais
     private val originalDrawables = mutableMapOf<ImageButton, Drawable?>()
 
     private var isFirstPlayerSelected = false
 
+    // Método chamado quando a activity é criada pela primeira vez
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -39,21 +42,16 @@ class GameActivity : AppCompatActivity() {
         }
 
         val btnSoundToggle: ImageButton = findViewById(R.id.music_button)
-
-        // Define o ícone de acordo com o estado atual
+        // Inicializa o som e define o ícone inicial
         btnSoundToggle.setImageResource(MusicManager.getCurrentIcon())
 
-        // Alterna o estado do som ao clicar no botão
+        // Gerencia o estado do som ao clicar no botão
         btnSoundToggle.setOnClickListener {
             MusicManager.toggleMute(btnSoundToggle)
         }
-
-        // Inicializa o MediaPlayer, mas só toca a música se o MediaPlayer não estiver inicializado
         if (MusicManager.mediaPlayer == null) {
-            MusicManager.initialize(this, R.raw.music) // Substitua com o arquivo de música adequado
+            MusicManager.initialize(this, R.raw.music)
         }
-
-        // Se a música não estiver mudo, começa a tocar
         if (!MusicManager.isMuted) {
             MusicManager.play()
         }
@@ -71,10 +69,10 @@ class GameActivity : AppCompatActivity() {
             findViewById<ImageButton>(R.id.bord_space_8)
         )
 
-        // Inicializa o drawable invisível
+        // Define o drawable invisível, para esconder as peças
         invisibleDrawable = gameBoard[0].drawable
 
-        // Referência ao layout de vitória
+        // Referências aos elementos da tela
         val winsView: RelativeLayout = findViewById(R.id.wins_view)
         val winsMessage: TextView = findViewById(R.id.credits_message_2)
         val returnMainActivityButton: ImageButton = findViewById(R.id.restart_game)
@@ -85,7 +83,7 @@ class GameActivity : AppCompatActivity() {
         var returnGameButton: ImageButton = findViewById(R.id.return_game_button)
         val returnButton: ImageButton = findViewById(R.id.return_button)
 
-        // Botões de peças dos jogadores
+        // Referências aos botões de peças dos jogadores
         val player1Pieces = arrayOf(
             findViewById<ImageButton>(R.id.first_small_player_1),
             findViewById<ImageButton>(R.id.second_small_player_1),
@@ -110,13 +108,12 @@ class GameActivity : AppCompatActivity() {
             findViewById<ImageButton>(R.id.third_big_player_2)
         )
 
-        // Salva os drawables originais das peças
         (player1Pieces + player2Pieces).forEach { button ->
             originalDrawables[button] = button.drawable
 
-            // Configura evento de clique para selecionar a peça
+            // Configuração dos cliques nas peças
             button.setOnClickListener {
-                if (button.isEnabled) { // Só permite selecionar se o botão estiver ativo
+                if (button.isEnabled) {
                     if (currentPlayer == 1 && button in player1Pieces || currentPlayer == 2 && button in player2Pieces) {
                         selectedPiece = button.drawable
                         selectedPieceSize = when (button.id) {
@@ -138,22 +135,22 @@ class GameActivity : AppCompatActivity() {
         // Configuração dos cliques no tabuleiro
         gameBoard.forEachIndexed { index, button ->
             button.setOnClickListener {
-                if (selectedPiece != null) { // Verifica se uma peça foi selecionada
+                if (selectedPiece != null) {
                     val (currentPlayerOnBoard, currentSizeOnBoard) = board[index / 3][index % 3]
 
-                    // Se o espaço estiver vazio ou a peça selecionada for maior
-                    if (currentPlayerOnBoard == 0 || selectedPieceSize > currentSizeOnBoard) {
-                        button.setImageDrawable(selectedPiece) // Atualiza o ícone no tabuleiro
-                        board[index / 3][index % 3] = Pair(currentPlayer, selectedPieceSize) // Atualiza o tabuleiro
-                        selectedPieceButton?.isEnabled = false // Desativa a peça usada
-                        selectedPieceButton?.setImageDrawable(invisibleDrawable) // Torna a peça invisível
-                        selectedPiece = null // Limpa a peça selecionada
-                        selectedPieceButton = null // Limpa o botão selecionado
 
-                        // Verifica vitória
+                    if (currentPlayerOnBoard == 0 || selectedPieceSize > currentSizeOnBoard) {
+                        button.setImageDrawable(selectedPiece)
+                        board[index / 3][index % 3] = Pair(currentPlayer, selectedPieceSize)
+                        selectedPieceButton?.isEnabled = false
+                        selectedPieceButton?.setImageDrawable(invisibleDrawable)
+                        selectedPiece = null
+                        selectedPieceButton = null
+
+                        // Verifica fim de jogo
                         if (checkWinCondition(currentPlayer)) {
                             showWinView(currentPlayer, winsView, winsMessage, player1Pieces + player2Pieces)
-                        } else if (isBoardFull()) { // Verifica se o tabuleiro está cheio e não há vencedor
+                        } else if (isBoardFull()) {
                             showDrawView(winsView, winsMessage)
                         } else {
                             // Troca o turno
@@ -172,14 +169,15 @@ class GameActivity : AppCompatActivity() {
 
         // Configura o clique do botão "Instruções"
         instructionsButton.setOnClickListener {
-            instructionsView.visibility = View.VISIBLE // Mostra a visualização de instruções
+            instructionsView.visibility = View.VISIBLE
         }
 
         // Configura o clique do botão "Voltar ao Jogo"
         returnGameButton.setOnClickListener {
-            instructionsView.visibility = View.GONE // Esconde a visualização de instruções
+            instructionsView.visibility = View.GONE
         }
 
+        // Botão para iniciar um novo jogo mesmo que o jogo atual não tenha terminado
         newGameButton.setOnClickListener {
             restartGame(gameBoard, player1Pieces + player2Pieces, winsView)
             Toast.makeText(this, "Novo jogo iniciado!", Toast.LENGTH_SHORT).show()
@@ -196,6 +194,7 @@ class GameActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        // Botão para retornar à MainActivity
         returnButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
@@ -204,14 +203,13 @@ class GameActivity : AppCompatActivity() {
 
     // Verifica a condição de vitória
     private fun checkWinCondition(player: Int): Boolean {
-        // Verifica linhas, colunas e diagonais
+
         for (i in 0..2) {
             if ((board[i][0].first == player && board[i][1].first == player && board[i][2].first == player) || // Linhas
                 (board[0][i].first == player && board[1][i].first == player && board[2][i].first == player)    // Colunas
             ) return true
         }
 
-        // Verifica diagonais
         if ((board[0][0].first == player && board[1][1].first == player && board[2][2].first == player) ||
             (board[0][2].first == player && board[1][1].first == player && board[2][0].first == player)
         ) return true
@@ -229,57 +227,53 @@ class GameActivity : AppCompatActivity() {
         winsMessage.text = "Jogador $winningPlayer venceu!"
         winsView.visibility = View.VISIBLE
 
-        // Desativa todos os botões de peças
         playerPieces.forEach { it.isEnabled = false }
     }
 
-    // Reinicia o jogo
+    // Reinicia o jogo, ou seja, limpa o tabuleiro e restaura as peças dos jogadores
     private fun restartGame(
         gameBoard: Array<ImageButton>,
         playerPieces: Array<ImageButton>,
         winsView: RelativeLayout
     ) {
-        // Limpa o tabuleiro
         gameBoard.forEach {
             it.setImageDrawable(null)
         }
 
-        // Reinicia o tabuleiro lógico
         for (i in 0..2) {
             for (j in 0..2) {
                 board[i][j] = Pair(0, 0)
             }
         }
 
-        // Restaura as peças dos jogadores
         playerPieces.forEach { button ->
             button.isEnabled = true
             button.setImageDrawable(originalDrawables[button]) // Restaura o drawable original
         }
 
-        // Esconde a tela de vitória
         winsView.visibility = View.GONE
 
-        // Reseta o jogador inicial
         currentPlayer = 1
     }
+
+    // Inicializa a música ao abrir a tela
     override fun onStart() {
         super.onStart()
-        // Garantir que a música continue tocando ao iniciar a activity
         if (!MusicManager.isMuted) {
-            MusicManager.play() // Continua tocando se não estiver mudo
+            MusicManager.play()
         }
     }
 
+    // Pausa a música ao fechar a tela
     override fun onStop() {
         super.onStop()
-        // Libera o MediaPlayer quando a activity for parada
     }
 
+    // Verifica se o tabuleiro está cheio
     private fun isBoardFull(): Boolean {
         for (i in 0..2) {
             for (j in 0..2) {
-                if (board[i][j].first == 0) { // Se algum espaço estiver vazio (0), o tabuleiro não está cheio
+                if (board[i][j].first == 0) {
                     return false
                 }
             }
@@ -287,7 +281,7 @@ class GameActivity : AppCompatActivity() {
         return true // Se não houver espaços vazios, o tabuleiro está cheio
     }
 
-
+    // Mostra o layout de empate
     private fun showDrawView(winsView: RelativeLayout, winsMessage: TextView) {
         winsMessage.text = "Empate! Nenhum jogador ganhou..."
         winsView.visibility = View.VISIBLE

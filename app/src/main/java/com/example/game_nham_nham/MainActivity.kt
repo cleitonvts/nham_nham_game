@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
+// A Main Activity é lógica a tela inicial do jogo, onde o jogador pode acessar o jogo, as opções e os créditos.
 class MainActivity : AppCompatActivity() {
     private var isMuted = false
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,22 +34,24 @@ class MainActivity : AppCompatActivity() {
 
         // Inicializa o som e define o ícone inicial
         btnSoundToggle.setImageResource(MusicManager.getCurrentIcon())
-
-        // Configura o listener para alternar o estado do som
+        // Define o comportamento do botão de som, que alterna entre mutar e desmutar a música
         btnSoundToggle.setOnClickListener {
             MusicManager.toggleMute(btnSoundToggle)
         }
 
+        // Inicializa os botões da tela
         val enterButton: ImageButton = findViewById(R.id.enter_button)
         val optionButton: ImageButton = findViewById(R.id.option_button)
         val creditsButton: ImageButton = findViewById(R.id.credits_button)
         val creditsView: View = findViewById(R.id.credits_view)
         val closeCreditsButton: Button = findViewById(R.id.close_credits_button)
 
+        // Define o comportamento do botão de entrar, que leva o jogador para a tela de jogo, GameActivity
         enterButton.setOnClickListener {
             val intent = Intent(this, GameActivity::class.java)
             startActivity(intent)
         }
+        // Define o comportamento do botão de opções, que ainda não está implementado e exibe um diálogo de aviso
         optionButton.setOnClickListener {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Aviso")
@@ -58,7 +61,7 @@ class MainActivity : AppCompatActivity() {
             }
             builder.show()
         }
-
+        // Define o comportamento do botão de créditos, que exibe a view de créditos
         creditsButton.setOnClickListener {
             creditsView.visibility = View.VISIBLE
         }
@@ -67,15 +70,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Inicializa a música ao abrir a tela
     override fun onStart() {
         super.onStart()
-        // Inicializa o MediaPlayer ao entrar na Activity, usando o MusicManager
-        MusicManager.initialize(this, R.raw.music) // Substitua com o arquivo de música adequado
+        MusicManager.initialize(this, R.raw.music)
         MusicManager.play()
     }
 
+    // Pausa a música ao fechar a tela
     override fun onStop() {
         super.onStop()
-        // Libera o MediaPlayer ao sair da Activity, usando o MusicManager
     }
 }
